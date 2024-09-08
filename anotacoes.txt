@@ -1,0 +1,23 @@
+Retirar toast: Hi budy, quando entra
+
+Login:
+    retirar numero de telefone
+    colocar data de nascimento
+
+Menu Lateral:
+    perfil do usuario não atualiza automaticamente quando edita usuário
+
+Usuario:
+    falta adicionar algumas informações sobre o usuario e alterar os campos
+
+Classe:
+    quando vai fazer edição de classe, as os valores das datas não estão inserindo corretamente nem na string nem no objeto
+
+Fazer build:
+    eas login
+        brunonasserjf
+        senhanormal
+    set EAS_NO_VCS=1 //Isso é para avisar que não vai usar git
+    eas build:configure
+    eas build --profile development
+    //eas build --platform all
