@@ -18,6 +18,8 @@ Fazer build:
         brunonasserjf
         senhanormal
     set EAS_NO_VCS=1 //Isso é para avisar que não vai usar git
+    se precisar dar prebuild
+        npx expo prebuild --no-install --plataform android
     eas build:configure
     eas build --profile development
     //eas build --platform all

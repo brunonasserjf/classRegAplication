@@ -30,14 +30,14 @@ export default StyleSheet.create({
   },
   inBut: {
     width: '70%',
-    backgroundColor: '#0163D2',
+    backgroundColor: 'orange',
     alignItems: 'center',
     paddingHorizontal: 15,
     paddingVertical: 15,
     borderRadius: 50,
   },
   header: {
-    backgroundColor: '#0163D2',
+    backgroundColor: 'orange',
     flexDirection: 'row',
     height: 60,
     justifyContent: 'center',

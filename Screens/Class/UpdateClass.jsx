@@ -118,13 +118,16 @@ function UpdateClass() {
     endHourWithDate.setSeconds(0);
     endHourWithDate.setMilliseconds(0);
 
+    const busGoCommaCorrection = (busGo.toString()).replace(',','.');
+    const busBackCommaCorrection = (busBack.toString()).replace(',','.');
+
     const formdata = {
         idClass: classToken,
         userId: userData._id,
         beginHour: beginHourWithDate,
         endHour: endHourWithDate,
-        busGo: busGo,
-        busBack: (sameValue ? busGo : busBack),
+        busGo: busGoCommaCorrection,
+        busBack: (sameValue ? busGoCommaCorrection : busBackCommaCorrection),
         priceClass: priceClass,
         student: student,
         content: classContent,
@@ -154,15 +157,6 @@ function UpdateClass() {
     const currentDate = selectedDate;
     setBeginHour(currentDate);
     setShowPickerBegin(false); // Fecha o DateTimePicker após seleção
-
-    // Formata a data
-    //const formatted = currentDate.toLocaleDateString('pt-BR');
-    //if(beginHour != currentDate){
-    //  const formatted = currentDate.getHours().toString().padStart(2, '0') + ':' + currentDate.getMinutes().toString().padStart(2, '0');
-    //  setBeginHourFormatted(formatted);
-    //}
-
-    console.log(beginHour);
   };
 
   const showTimePickerBegin = () => {
@@ -173,13 +167,6 @@ function UpdateClass() {
     const currentDate = selectedDate;
     setShowPickerEnd(false); // Fecha o DateTimePicker após seleção
     setEndHour(currentDate);
-
-    // Formata a data
-    //const formatted = currentDate.toLocaleDateString('pt-BR');
-    //if(endHour != currentDate){
-    //  const formatted = currentDate.getHours().toString().padStart(2, '0') + ':' + currentDate.getMinutes().toString().padStart(2, '0');
-    //  setEndHourFormatted(formatted);
-    //}
   };
 
   const showTimePickerEnd = () => {
@@ -195,6 +182,24 @@ function UpdateClass() {
   const showTimePickerDateDay = () => {
     setShowPickerDateDay(true);
   };
+
+  function generateDate(data){
+    if(data != null && data != undefined){
+        const dateBirth = new Date(data);
+        return String(dateBirth.getDate()).padStart(2,'0') + "/" + String((dateBirth.getMonth()+1)).padStart(2, '0') + "/" + String(dateBirth.getFullYear()).padStart(2, '0');
+    }else{
+        return '';
+    }
+  }
+
+  function generateTime(data){
+    if(data != null && data != undefined){
+        const dateBirth = new Date(data);
+        return String(dateBirth.getHours()).padStart(2,'0') + ":" + String((dateBirth.getMinutes())).padStart(2, '0');
+    }else{
+        return '';
+    }
+  }
 
   return (
     <ScrollView
@@ -219,7 +224,8 @@ function UpdateClass() {
 
           <View style={styles.infoEditView}>
             <Text style={styles.infoEditFirst_text}>Data</Text>
-            <View style={styles.container}>
+            <View style={[styles.container,{flexDirection:'row'}]}>
+                <Text style={styles.infoEditSecond_text}>{generateDate(dateDay)}</Text>
                 {showPickerDateDay && (
                     <DateTimePicker
                     value={dateDay != null ? dateDay : new Date()}
@@ -239,7 +245,8 @@ function UpdateClass() {
 
           <View style={styles.infoEditView}>
             <Text style={styles.infoEditFirst_text}>Início</Text>
-            <View style={styles.container}>
+            <View style={[styles.container,{flexDirection:'row'}]}>
+                <Text style={styles.infoEditSecond_text}>{generateTime(beginHour)}</Text>
                 {showPickerBegin && (
                     <DateTimePicker
                     value={beginHour != null ? beginHour : new Date()}
@@ -260,7 +267,8 @@ function UpdateClass() {
 
           <View style={styles.infoEditView}>
             <Text style={styles.infoEditFirst_text}>Fim</Text>
-            <View style={styles.container}>
+            <View style={[styles.container, {flexDirection:'row'}]}>
+                <Text style={styles.infoEditSecond_text}>{generateTime(endHour)}</Text>
                 {showPickerEnd && (
                     <DateTimePicker
                     value={endHour != null ? endHour : new Date()}

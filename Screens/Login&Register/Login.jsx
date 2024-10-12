@@ -1,4 +1,4 @@
-const { View, Text, Image, TextInput, TouchableOpacity, ScrollView, Alert } = require('react-native');
+const { View, Text, Image, TextInput, TouchableOpacity, ScrollView, Alert, ActivityIndicator } = require('react-native');
 import {useNavigation} from '@react-navigation/native';
 import styles from './style';
 import Feather from 'react-native-vector-icons/Feather';
@@ -13,40 +13,53 @@ function LoginPage({props}) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(true);
+  const [loading, setLoading] = useState(false);
 
-  function handleSubmit() {
+  async function handleSubmit() {
     const userData = {
       email: email,
       password,
     };
 
-    console.log(userData.email, userData.password);
-    //axios.post('http://192.168.100.32:5002/login-user', userData).then(res => {
-    axios.post('https://classregserver.onrender.com/login-user', userData).then(res => {      
-      console.log(res.data);
-      if (res.data.status == 'ok') {
-        //Alert.alert('Logged In Successfull');
+    setLoading(true);
+    try {
+      console.log(userData.email);
+      const res = await axios.post('https://classregserver.onrender.com/login-user', userData);
+      console.log("Login-user: status - " + JSON.stringify(res.data.status) + "; data - " + JSON.stringify(res.data.data));
+      if(res != null) {      
+        if (res.data.status == 'ok') {
+          //Alert.alert('Logged In Successfull');
+          AsyncStorage.setItem('token', res.data.data);
+          console.log("Token: " + res.data.data);
+          AsyncStorage.setItem('isLoggedIn', JSON.stringify(true));
+          AsyncStorage.setItem('userType',res.data.userType);
+          // navigation.navigate('Home');
+          if(res.data.userType=="Admin"){
+             navigation.navigate('AdminScreen');
+          }else{
+            navigation.navigate('Home');
+          }
         
-        AsyncStorage.setItem('token', res.data.data);
-        console.log("Token: " + res.data.data);
-        AsyncStorage.setItem('isLoggedIn', JSON.stringify(true));
-        AsyncStorage.setItem('userType',res.data.userType);
-        // navigation.navigate('Home');
-        if(res.data.userType=="Admin"){
-           navigation.navigate('AdminScreen');
         }else{
-          navigation.navigate('Home');
+          Toast.show({
+            type: 'error',
+            text: 'Erro',
+            text2: (res.data.data != null && res.data.data != "" ? res.data.data : "Erro ao realizar login"),
+            visibilityTime: 5000,
+        }, 2000);
         }
-      
-      }else{
-        Toast.show({
+      }
+    } catch(error){
+      Toast.show({
           type: 'error',
           text: 'Erro',
           text2: (res.data.data != null && res.data.data != "" ? res.data.data : "Erro ao realizar login"),
           visibilityTime: 5000,
       }, 2000);
-      }
-    });
+    }
+    finally {
+      setLoading(false);
+    }
   }
   async function getData() {
     const data = await AsyncStorage.getItem('isLoggedIn');
@@ -119,11 +132,15 @@ function LoginPage({props}) {
           </View>
         </View>
         <View style={styles.button}>
-          <TouchableOpacity style={styles.inBut} onPress={() => handleSubmit()}>
-            <View>
-              <Text style={styles.textSign}>Entrar</Text>
-            </View>
-          </TouchableOpacity>
+          {loading ? (
+            <ActivityIndicator size="large" color="#0000ff" />
+          ) : (
+            <TouchableOpacity style={styles.inBut} onPress={() => handleSubmit()}>
+              <View>
+                <Text style={styles.textSign}>Entrar</Text>
+              </View>
+            </TouchableOpacity>
+          )}
 
           <View style={{padding: 15}}>
             <Text style={{fontSize: 14, fontWeight: 'bold', color: '#919191'}}>

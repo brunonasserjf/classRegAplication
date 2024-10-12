@@ -1,4 +1,4 @@
-const { View, Text, Image, TextInput, TouchableOpacity, ScrollView, Alert } = require('react-native');
+const { View, Text, Image, TextInput, TouchableOpacity, ScrollView, Alert, ActivityIndicator } = require('react-native');
 import {useNavigation} from '@react-navigation/native';
 import styles from './style';
 import Feather from 'react-native-vector-icons/Feather';
@@ -23,12 +23,13 @@ const [passwordVerify, setPasswordVerify] = useState(false);
 const [showPassword, setShowPassword] = useState(true);
 const [userType, setUserType] = useState('User');
 const [secretText, setSecretText] = useState('');
+const [loading, setLoading] = useState(false);
 
 const [showPickerBirth, setShowPickerBirth] = useState(false);
 
 const navigation = useNavigation();
 
-function handleSubmit(){
+async function handleSubmit(){
     const userData={
         name: name,
         email: email,
@@ -37,36 +38,47 @@ function handleSubmit(){
         userType: userType,
     };
 
-    //Se usamos localhost no lado do front, ele pega informação do proprio device e não do servidor, por isso que precisa ser o ip do pc
-    if(nameVerify && emailVerify && birthVerify && passwordVerify){
-        if (userType == 'Admin' && secretText != 'Text1243') {
-            return Alert.alert('Invalid Admin');
-        }
-        
-        //axios.post("http://192.168.100.32:5002/register", userData)
-        axios.post("https://classregserver.onrender.com/register", userData)
-        .then((res) => {
-            console.log(res.data);
-            if(res.data.status == 'ok'){
-                Alert.alert('Cadastro realizado');
-                navigation.navigate("Login");
-            }else{
-                console.log(res.data);
-                Alert.alert(JSON.stringify(res.data));
+    setLoading(true);
+    try {
+        //Se usamos localhost no lado do front, ele pega informação do proprio device e não do servidor, por isso que precisa ser o ip do pc
+        if(nameVerify && emailVerify && birthVerify && passwordVerify){
+            if (userType == 'Admin' && secretText != 'Text1243') {
+                return Alert.alert('Invalid Admin');
             }
-        })
-        .catch(e => {
-            console.log(JSON.stringify(e));
-        });
+            
+            //axios.post("http://192.168.100.32:5002/register", userData)
+            const res = await axios.post("https://classregserver.onrender.com/register", userData);
+            if(res != null){
+                console.log(res.data);
+                if(res.data.status == 'ok'){
+                    Alert.alert('Cadastro realizado');
+                    navigation.navigate("Login");
+                }else{
+                    console.log(res.data);
+                    Alert.alert(JSON.stringify(res.data));
+                }
+            }
+        }
+        else{
+            //Alert.alert("Fill mandatory details");
+            Toast.show({
+                type: 'error',
+                text: 'Erro',
+                text2: 'Preencha todos os campos corretamente',
+                visibilityTime: 5000,
+            }, 2000);
+        }
     }
-    else{
-        //Alert.alert("Fill mandatory details");
+    catch(error){
         Toast.show({
             type: 'error',
             text: 'Erro',
-            text2: 'Preencha todos os campos corretamente',
+            text2: (res.data.data != null && res.data.data != "" ? res.data.data : "Erro ao realizar login"),
             visibilityTime: 5000,
         }, 2000);
+    }
+    finally{
+        setLoading(false);
     }
 }
 
@@ -300,13 +312,17 @@ return (
                 </Text>
             )}
             </View>
-            <View style={styles.button}>
-            <TouchableOpacity style={styles.inBut} onPress={() => handleSubmit()}>
-                <View>
-                <Text style={styles.textSign}>Cadastrar</Text>
+            {loading ? (
+                <ActivityIndicator size="large" color="#0000ff" />
+            ) : ( 
+                <View style={styles.button}>
+                    <TouchableOpacity style={styles.inBut} onPress={() => handleSubmit()}>
+                        <View>
+                            <Text style={styles.textSign}>Cadastrar</Text>
+                        </View>
+                    </TouchableOpacity>
                 </View>
-            </TouchableOpacity>
-            </View>
+            )}
         </View>
         </ScrollView>
     );

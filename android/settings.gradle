@@ -44,7 +44,7 @@ if (getRNMinorVersion() >= 75) {
   }
 }
 
-rootProject.name = 'friends2'
+rootProject.name = 'Frauss'
 
 dependencyResolutionManagement {
   versionCatalogs {

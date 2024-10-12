@@ -5,6 +5,8 @@ import {
   TouchableOpacity,
   TextInput,
   ScrollView,
+  Alert,
+  BackHandler,
 } from 'react-native';
 import {Avatar} from 'react-native-paper';
 import styles from './stylesProfileEdit';
@@ -19,6 +21,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 import * as ImagePicker from 'expo-image-picker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function UpdateProfile() {
   const [image, setImage] = useState('');
@@ -80,6 +83,23 @@ function UpdateProfile() {
     setName(userData.name);
     setBirth(new Date(userData.birth));
   },[]);
+
+  const handleBackPress = () => {
+    Alert.alert('Atualizar', 'Atualições de dados de usuário exigem login novamente. Deseja continuar?', [
+      {
+          text: 'Cancelar',
+          onPress: () => { return false; },
+          style: 'cancel',
+      },
+      {
+          text: 'Sim',
+          onPress: () => updateProfile(),
+      },
+      ],
+      { cancelable: false });
+    return true;
+  };
+
   const updateProfile = () => { 
     const formdata = {
       name: name,
@@ -98,9 +118,23 @@ function UpdateProfile() {
           text1:'Dados alterados com sucesso',
           });
           navigation.navigate('ShowProfile');
+          BackHandler.exitApp();
         }
       });
   };
+
+  const backToHome = () =>{
+    navigation.navigate('ShowProfile');
+  }
+
+  function generateDate(data){
+    if(data != null && data != undefined){
+        const dateBirth = new Date(data);
+        return String(dateBirth.getDate()).padStart(2,'0') + "/" + String((dateBirth.getMonth()+1)).padStart(2, '0') + "/" + String(dateBirth.getFullYear()).padStart(2, '0');
+    }else{
+        return '';
+    }
+  }
 
   return (
     <ScrollView
@@ -110,13 +144,16 @@ function UpdateProfile() {
       <View>
         <View style={styles.header}>
           <View style={{flex: 1}}>
-            <Back name="arrow-back" size={30} style={styles.backIcon} />
+            <TouchableOpacity onPress={() => backToHome()}>
+              <Back name="arrow-back" size={30} style={styles.backIcon} />
+            </TouchableOpacity>
           </View>
           <View style={{flex: 3}}>
-            <Text style={styles.nameText}>Edit Profile</Text>
+            <Text style={styles.nameText}>Editar Usuário(a)</Text>
           </View>
           <View style={{flex: 1}}></View>
         </View>
+        
         <View style={styles.camDiv}>
           <View style={styles.camIconDiv}>
             <Back name="camera" size={22} style={styles.cameraIcon} />
@@ -142,7 +179,7 @@ function UpdateProfile() {
             marginHorizontal: 22,
           }}>
           <View style={styles.infoEditView}>
-            <Text style={styles.infoEditFirst_text}>Username</Text>
+            <Text style={styles.infoEditFirst_text}>Usuário(a)</Text>
             <TextInput
               placeholder="Your Name"
               placeholderTextColor={'#999797'}
@@ -153,7 +190,7 @@ function UpdateProfile() {
           </View>
 
           <View style={styles.infoEditView}>
-            <Text style={styles.infoEditFirst_text}>Email</Text>
+            <Text style={styles.infoEditFirst_text}>E-mail</Text>
             <TextInput
               editable={false}
               placeholder="E-mail"
@@ -166,7 +203,8 @@ function UpdateProfile() {
 
           <View style={styles.infoEditView}>
             <Text style={styles.infoEditFirst_text}>Data de nascimento</Text>
-            <View style={styles.container}>
+            <View style={[styles.container,{flexDirection:'row'}]}>
+                <Text style={styles.infoEditSecond_text}>{generateDate(birth)}</Text>
                 {showPickerBirth && (
                     <DateTimePicker
                     value={birth != null && birth != undefined ? birth : new Date()}
@@ -210,10 +248,10 @@ function UpdateProfile() {
         </View>
         <View style={styles.button}>
           <TouchableOpacity
-            onPress={() => updateProfile()}
+            onPress={() => handleBackPress()}
             style={styles.inBut}>
             <View>
-              <Text style={styles.textSign}>Update Profile</Text>
+              <Text style={styles.textSign}>Atualizar</Text>
             </View>
           </TouchableOpacity>
         </View>

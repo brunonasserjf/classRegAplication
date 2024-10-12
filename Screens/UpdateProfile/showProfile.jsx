@@ -57,9 +57,7 @@ function ShowProfile(props) {
             <View style={{position: 'relative'}}>
             <TouchableOpacity
                 style={styles.backIcon}
-                onPress={() => {
-                navigation.dispatch(DrawerActions.openDrawer());
-                }}>
+                onPress={() => { navigation.dispatch(DrawerActions.openDrawer()) }}>
                 <Mobile name="menu" size={30} color="white" />
             </TouchableOpacity>
             <TouchableOpacity

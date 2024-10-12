@@ -1,7 +1,7 @@
 import 'react-native-gesture-handler';
 import 'react-native-safe-area-context';
 import 'react-native-reanimated';
-import { Text } from "react-native"
+import { Text, ActivityIndicator, AppRegistry } from "react-native"
 import { NavigationContainer, useNavigation, DrawerActions } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createDrawerNavigator } from "@react-navigation/drawer";
@@ -20,11 +20,10 @@ import AdminScreen from './Screens/AdminScreen';
 import ShowProfile from './Screens/UpdateProfile/showProfile';
 import PseudoHome1 from "./Screens/PseudoHome1";
 import UpdateClass from "./Screens/Class/UpdateClass";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ReportScreen from "./Screens/Report/Report";
 import ReportPage from "./Screens/Report/reportPage";
 import ReportPageContent from "./Screens/Report/reportPageContent";
-import { AppRegistry } from 'react-native';
 
 AppRegistry.registerComponent("main", () => App);
 
@@ -216,6 +215,10 @@ function App(){
     setIsLoggedIn(data);
     setUserType(userType1);
   }
+
+  useEffect(() => {
+    getData();
+  }, []);
 
   //Cria navegação, se for admin logado vai para um, se não for admin mas estiver logado vai para outro e se não tiver logado vai para um terceiro
   const Stack = createNativeStackNavigator();

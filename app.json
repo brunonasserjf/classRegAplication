@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "friends2",
+    "name": "Frauss",
     "slug": "friends2",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -16,8 +16,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/icon.png"
       },
       "package": "com.brunonasserjf.friends2",
       "jsEngine": "hermes"

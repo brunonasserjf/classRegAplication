@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, StyleSheet, Text} from 'react-native';
+import {View, StyleSheet, Text, BackHandler} from 'react-native';
 import {DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer';
 import {Avatar, Title} from 'react-native-paper';
 import {TouchableOpacity} from 'react-native-gesture-handler';
@@ -71,6 +71,7 @@ function DrawerContent(props) {
   
   useEffect(() => {
     getData();
+
   }, []);
 
   useFocusEffect(
@@ -84,6 +85,7 @@ function DrawerContent(props) {
     AsyncStorage.setItem('token','');
     AsyncStorage.setItem('userId','');
     navigation.navigate("LoginUser");
+    BackHandler.exitApp();
   }
 
   return (

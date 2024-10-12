@@ -81,14 +81,14 @@ function PseudoHome1(props) {
 
 
     const handleBackPress = () => {
-        Alert.alert('Exit App', 'Are you sure you want to exit?', [
+        Alert.alert('Sign out', 'Deseja mesmo sair?', [
         {
-            text: 'Cancel',
+            text: 'Cancelar',
             onPress: () => null,
             style: 'cancel',
         },
         {
-            text: 'Exit',
+            text: 'Sim',
             onPress: () => BackHandler.exitApp(),
         },
         ]);
@@ -168,7 +168,7 @@ function PseudoHome1(props) {
             const price = data.priceClass;
             const busGo = (data.busGo != null ? parseFloat(data.busGo) : 0);
             const busBack = (data.busBack != null ? parseFloat(data.busBack) : 0);
-            var renda = hours*price + (minutes/60.0)*price - (busGo + busBack);
+            var renda = hours*price + (minutes/60.0)*price + (busGo + busBack);
 
             renda = `${String(renda.toFixed(2)).padStart(2, '0')}`;
         }
@@ -215,7 +215,7 @@ function PseudoHome1(props) {
         <View style={styles.cardDetails}>
             <Text style={styles.name}>{generateTitle(data)}</Text>
             <Text style={styles.email}>Duração: {generateDuration(data)}</Text>
-            <Text style={styles.userType}>Renda: R$ {generateRenda(data)}</Text>
+            <Text style={styles.userType}>Receita: R$ {generateRenda(data)}</Text>
         </View>
         <View>
             <Icon
